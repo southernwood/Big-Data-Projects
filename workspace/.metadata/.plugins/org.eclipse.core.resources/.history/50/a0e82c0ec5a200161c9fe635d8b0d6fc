@@ -1,0 +1,102 @@
+package stubs;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+/* 
+ * To define a reduce function for your MapReduce job, subclass 
+ * the Reducer class and override the reduce method.
+ * The class definition requires four parameters: 
+ *   The data type of the input key (which is the output key type 
+ *   from the mapper)
+ *   The data type of the input value (which is the output value 
+ *   type from the mapper)
+ *   The data type of the output key
+ *   The data type of the output value
+ */   
+public class TopNReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+
+  /*
+   * The reduce method runs once for each key received from
+   * the shuffle and sort phase of the MapReduce framework.
+   * The method receives a key of type Text, a set of values of type
+   * IntWritable, and a Context object.
+   */
+  @Override
+	public void reduce(Text key, Iterable<IntWritable> values, Context context)
+			throws IOException, InterruptedException {
+		int wordCount = 0;
+		
+		/*
+		 * For each value in the set of values passed to us by the mapper:
+		 */
+		for (IntWritable value : values) {
+		  
+		  /*
+		   * Add the value to the word count counter for this key.
+		   */
+			wordCount += value.get();
+		}
+		
+		/*
+		 * Call the write method on the Context object to emit a key
+		 * and a value from the reduce method. 
+		 */
+		context.write(key, new IntWritable(wordCount));
+	}
+}
+
+
+
+import java.io.IOException;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+public class TopNReducer  extends
+   Reducer<NullWritable, Text, IntWritable, Text> {
+
+   private int N = 10; // default
+   private SortedMap<Integer, String> top = new TreeMap<Integer, String>();
+
+   @Override
+   public void reduce(NullWritable key, Iterable<Text> values, Context context) 
+      throws IOException, InterruptedException {
+      for (Text value : values) {
+         String valueAsString = value.toString().trim();
+         String[] tokens = valueAsString.split(",");
+         String url = tokens[0];
+         int frequency =  Integer.parseInt(tokens[1]);
+         top.put(frequency, url);
+         // keep only top N
+         if (top.size() > N) {
+            top.remove(top.firstKey());
+         }
+      }
+      
+      // emit final top N
+        List<Integer> keys = new ArrayList<Integer>(top.keySet());
+        for(int i=keys.size()-1; i>=0; i--){
+         context.write(new IntWritable(keys.get(i)), new Text(top.get(keys.get(i))));
+      }
+   }
+   
+   @Override
+   protected void setup(Context context) 
+      throws IOException, InterruptedException {
+      this.N = context.getConfiguration().getInt("N", 10); // default is top 10
+   }
+
+
+}

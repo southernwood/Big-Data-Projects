@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 3 elements to &apos;TopNlist/src/stubs&apos;&#x0A;- Original project: &apos;wordcount&apos;&#x0A;- Destination element: &apos;TopNlist/src/stubs&apos;&#x0A;- Original elements:&#x0A;     stubs.WordCount.java&#x0A;     stubs.WordMapper.java&#x0A;     stubs.SumReducer.java" description="Copy compilation units" destination="=TopNlist/src&lt;stubs" element1="/src&lt;stubs{WordCount.java" element2="/src&lt;stubs{WordMapper.java" element3="/src&lt;stubs{SumReducer.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1478274711438" units="3" version="1.0"/>
+</session>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="SentimentPartitionTest" project="partitioner" tests="1" started="1" failures="0" errors="0" ignored="0">
+  <testsuite name="stubs.SentimentPartitionTest" time="1.572">
+    <testcase name="testSentimentPartition" classname="stubs.SentimentPartitionTest" time="1.572"/>
+  </testsuite>
+</testrun>
